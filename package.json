@@ -1,0 +1,13 @@
+{
+  "name": "gitlab-deploy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "wusung <twkoci@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^3.9.1",
+    "fastify-bearer-auth": "^5.0.2",
+    "fastify-multipart": "^3.3.1",
+    "uuid": "^8.3.1"
+  }
+}
