@@ -54,7 +54,7 @@ fastify.post('/deploy', async (req, reply) => {
     name: data.filename,
     deploy: deployPath,
     target: `${FINAL_PATH}/${path.basename(data.filename, '.gz')}`,
-    example: `api {  }`,
+    nginx: `location / { root ${FINAL_PATH}/${path.basename(data.filename, '.gz')}/; }`,
   });
 });
 
