@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { v4: uuid } = require('uuid');
 
 exports.formatDate = (date) => {
@@ -10,8 +11,13 @@ exports.formatDate = (date) => {
     let hours = '' + d.getHours();
     let minutes = '' + d.getMinutes();
     let seconds = '' + d.getSeconds();
-
-    return [year.padStart(2, '0'), month.padStart(2, '0'), day.padStart(2, '0'), hours.padStart(2, '0'), minutes.padStart(2, '0'), seconds.padStart(2, '0')].join('');
+    return [
+        year.padStart(2, '0'),
+        month.padStart(2, '0'),
+        day.padStart(2, '0'),
+        hours.padStart(2, '0'),
+        minutes.padStart(2, '0'),
+        seconds.padStart(2, '0')].join('');
 }
 
 exports.ensurePath = (pathname) => {
@@ -37,4 +43,8 @@ exports.createKey = (keyPath) => {
         console.log(`Please write down the key. You can delete ${keyPath} if you forget the key.`);
         console.log(`key = ${key}`);
     }
+}
+
+exports.createHash = (str) => {
+    return crypto.createHash('sha256').update(str).digest('base64');
 }

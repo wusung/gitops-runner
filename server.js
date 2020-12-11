@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
@@ -9,6 +8,7 @@ const {
   ensurePath,
   resolveHome,
   createKey,
+  createHash,
 } = require('./utils');
 
 const pump = util.promisify(pipeline);
@@ -18,12 +18,8 @@ const fastify = require('fastify')({
 });
 
 const KEY_PATH = resolveHome('~/.gitlab-deploy/gitlab-deploy.key');
-const DEPLOY_PATH = resolveHome('~/.gitlab-deploy');
+const APP_PATH = resolveHome('~/.gitlab-deploy');
 const FINAL_PATH = '/var/lib/www';
-
-function createHash(str) {
-  return crypto.createHash('sha256').update(str).digest('base64');
-}
 
 function getEncrypedKey() {
   return fs.readFileSync(KEY_PATH, 'utf-8').trim();
@@ -37,24 +33,26 @@ fastify.register(bearerAuthPlugin, {
 fastify.register(require('fastify-multipart'));
 
 fastify.post('/deploy', async (req, reply) => {
-  ensurePath(path.dirname(DEPLOY_PATH));
+  ensurePath(path.dirname(APP_PATH));
 
   const options = { limits: { fileSize: 200 * 1000 * 1000 } };
   const data = await req.file(options);
-  const target = path.join(DEPLOY_PATH, `${data.filename}`);
+  const target = path.join(APP_PATH, `${data.filename}`);
   await pump(data.file, fs.createWriteStream(target));
+  const appName = `${path.basename(data.filename, '.gz')}`;
 
-  const deployPath = path.join(DEPLOY_PATH, `${path.basename(data.filename, '.gz')}_${formatDate(new Date())}`);
-  await decompress(target, deployPath);
+  const deployPath = path.join(APP_PATH, `${appName}_${formatDate(new Date())}`);
+  await decompress(target, deployPath, { strip: 1 });
   console.log(`${deployPath} deployed.`);
 
-  if (fs.existsSync(FINAL_PATH)) fs.unlinkSync(FINAL_PATH);
-  fs.symlinkSync(deployPath, FINAL_PATH);
+  let wwwPath = `${FINAL_PATH}/${appName}`;
+  if (fs.existsSync(wwwPath)) fs.unlinkSync(wwwPath);
+  fs.symlinkSync(deployPath, wwwPath);
   reply.send({
     name: data.filename,
     deploy: deployPath,
-    target: `${FINAL_PATH}/${path.basename(data.filename, '.gz')}`,
-    nginx: `location / { root ${FINAL_PATH}/${path.basename(data.filename, '.gz')}/; }`,
+    target: wwwPath,
+    nginx: `location / { root ${wwwPath}/; }`,
   });
 });
 
