@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
+const decompress = require('decompress');
 const { v4: uuid } = require('uuid');
 const { pipeline } = require('stream');
 
@@ -20,11 +21,35 @@ function resolveHome(filepath) {
 
 const KEY_PATH = resolveHome('~/.gitlab-deploy/gitlab-deploy.key');
 const DEPLOY_PATH = resolveHome('~/.gitlab-deploy');
+const FINAL_PATH = '/var/lib/www';
 
 function ensurePath(pathname) {
   if (!fs.existsSync(resolveHome(pathname))) {
     fs.mkdirSync(resolveHome(pathname), { recursive: true });
   }
+}
+
+function formatDate(date) {
+  const d = new Date(date);
+  let month = '' + (d.getMonth() + 1);
+  let day = '' + d.getDate();
+  let year = '' + d.getFullYear();
+  let hours = '' + d.getHours();
+  let minutes = '' + d.getMinutes();
+  let seconds = '' + d.getSeconds();
+
+  if (month.length < 2)
+    month = '0' + month;
+  if (day.length < 2)
+    day = '0' + day;
+  if (hours.length < 2)
+    hours = '0' + hours;
+  if (minutes.length < 2)
+    minutes = '0' + minutes;
+  if (seconds.length < 2)
+    seconds = '0' + seconds;
+
+  return [year, month, day, hours, minutes, seconds].join('');
 }
 
 function createKey() {
@@ -59,14 +84,18 @@ fastify.post('/deploy', async (req, reply) => {
 
   const options = { limits: { fileSize: 200 * 1000 * 1000 } };
   const data = await req.file(options);
-  const target = path.join(DEPLOY_PATH, data.filename);
-
-  console.log(`deploying to ${target}`);
+  const target = path.join(DEPLOY_PATH, `${data.filename}`);
   await pump(data.file, fs.createWriteStream(target));
-  console.log(`deployed to ${target}`);
+
+  const deployPath = path.join(DEPLOY_PATH, `${path.basename(data.filename, '.gz')}_${formatDate(new Date())}`);
+  await decompress(target, deployPath);
+  console.log(`${deployPath} deployed.`);
+
+  if (fs.existsSync(FINAL_PATH)) fs.unlinkSync(FINAL_PATH);
+  fs.symlinkSync(deployPath, FINAL_PATH);
   reply.send({
     name: data.filename,
-    mimetype: data.mimetype,
+    deploy: deployPath,
   });
 });
 
