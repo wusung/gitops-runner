@@ -25,6 +25,24 @@ ExecStart=/usr/bin/env node ${WORK_DIR}/server.js
 [Install]
 WantedBy=multi-user.target
 
+[Unit]
+Description=Gitlab Ddeploy service
+After=network.target
+
+[Service]
+Type=idle
+Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 JAVA=/usr/bin/java
+User=root
+Group=root
+WorkingDirectory=${WORK_DIR}
+ExecStart=/usr/bin/env node ${WORK_DIR}/server.js
+TimeoutStartSec=600
+TimeoutStopSec=600
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target
 EOF
     echo "${SYSTEMD_SERVICE} created."
 fi
