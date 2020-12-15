@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-WORK_DIR=${HOME}/.gitlab-deploy-${RANDOM}
+WORK_DIR=/opt/gitlab-deploy
 SYSTEMD_SERVICE="/etc/systemd/system/gitlab-deploy.service"
+
+if [ -d ${WORK_DIR] ]; then
+    echo "${WORK_DIR} is existed. stop install."
+    exit 1
+fi
 
 ## Clone the repo
 git clone https://github.com/wusung/gitlab-deploy.git ${WORK_DIR} || { echo >&2 "Clone failed with $?"; exit 1; }
