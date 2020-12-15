@@ -17,7 +17,6 @@ After=network.target
 
 [Service]
 Type=idle
-Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 JAVA=/usr/bin/java
 User=root
 Group=root
 WorkingDirectory=${WORK_DIR}
