@@ -14,20 +14,6 @@ if [ ! -f ${SYSTEMD_SERVICE} ]; then
 [Unit]
 Description=Gitlab Ddeploy service
 After=network.target
-StartLimitIntervalSec=0
-[Service]
-Type=simple
-Restart=always
-RestartSec=1
-User=root
-ExecStart=/usr/bin/env node ${WORK_DIR}/server.js
-
-[Install]
-WantedBy=multi-user.target
-
-[Unit]
-Description=Gitlab Ddeploy service
-After=network.target
 
 [Service]
 Type=idle
