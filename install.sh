@@ -12,7 +12,7 @@ popd >/dev/null
 if [ ! -f ${SYSTEMD_SERVICE} ]; then
     cat >${SYSTEMD_SERVICE} <<EOF
 [Unit]
-Description=Gitlab Ddeploy service
+Description=Gitlab deploy service
 After=network.target
 
 [Service]
