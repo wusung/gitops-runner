@@ -17,8 +17,8 @@ const fastify = require('fastify')({
   logger: false,
 });
 
-const KEY_PATH = resolveHome('~/.gitlab-deploy/gitlab-deploy.key');
-const APP_PATH = resolveHome('~/.gitlab-deploy');
+const KEY_PATH = resolveHome('/var/lib/gitlab-deploy/gitlab-deploy.key');
+const APP_PATH = resolveHome('/var/lib/gitlab-deploy');
 const FINAL_PATH = '/var/lib/www';
 
 function getEncrypedKey() {
