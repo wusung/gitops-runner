@@ -1,3 +1,4 @@
+const { Command } = require('commander');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
@@ -17,9 +18,17 @@ const fastify = require('fastify')({
   logger: false,
 });
 
+const program = new Command();
+program
+  .version('1.0.0')
+  .option('-p, --port <port>', 'listening port')
+  .option('-w, --working-path <path>', 'the working path')
+  .option('-a, --app-path <path>', 'the application path');
+program.parse(process.argv);
+
 const KEY_PATH = resolveHome('/var/lib/gitlab-deploy/gitlab-deploy.key');
-const APP_PATH = resolveHome('/var/lib/gitlab-deploy');
-const FINAL_PATH = '/var/lib/www';
+const WORKING_PATH = resolveHome(program.workingPath || '~/.gitlab-deploy');
+const APP_PATH = resolveHome(program.appPath || '/var/lib/www');
 
 function getEncrypedKey() {
   return fs.readFileSync(KEY_PATH, 'utf-8').trim();
@@ -33,19 +42,25 @@ fastify.register(bearerAuthPlugin, {
 fastify.register(require('fastify-multipart'));
 
 fastify.post('/deploy', async (req, reply) => {
-  ensurePath(path.dirname(APP_PATH));
+  ensurePath(WORKING_PATH);
+  ensurePath(APP_PATH);
 
   const options = { limits: { fileSize: 200 * 1000 * 1000 } };
   const data = await req.file(options);
-  const target = path.join(APP_PATH, `${data.filename}`);
+  const target = path.join(WORKING_PATH, `${data.filename}`);
   await pump(data.file, fs.createWriteStream(target));
-  const appName = `${path.basename(data.filename, '.gz')}`;
+  const appName = `${path.basename(path.basename(data.filename, '.gz'), '.tar')}`;
 
-  const deployPath = path.join(APP_PATH, `${appName}_${formatDate(new Date())}`);
-  await decompress(target, deployPath, { strip: 1 });
-  console.log(`${deployPath} deployed.`);
+  const deployPath = path.join(WORKING_PATH, `${appName}_${formatDate(new Date())}`);
+  if (data.filename.endsWith('.gz'))
+    await decompress(target, deployPath, { strip: 1 });
+  else {
+    fs.copyFileSync(target, deployPath);
+  }
+  console.log(`${deployPath} uploaded.`);
 
-  let wwwPath = `${FINAL_PATH}/${appName}`;
+  const wwwPath = `${APP_PATH}/${appName}`;
+  console.log(`${wwwPath} deployed.`);
   if (fs.existsSync(wwwPath)) fs.unlinkSync(wwwPath);
   fs.symlinkSync(deployPath, wwwPath);
   reply.send({
@@ -57,7 +72,7 @@ fastify.post('/deploy', async (req, reply) => {
 });
 
 // Run the server!
-fastify.listen(3000, (err, address) => {
+fastify.listen(program.port || 3000, (err, address) => {
   if (err) throw err;
-  fastify.log.info(`server listening on ${address}`);
+  console.log(`Server listening on ${address}`);
 });

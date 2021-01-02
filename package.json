@@ -5,6 +5,7 @@
   "author": "wusung <twkoci@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "commander": "^6.2.1",
     "decompress": "^4.2.1",
     "fastify": "^3.9.1",
     "fastify-bearer-auth": "^5.0.2",
