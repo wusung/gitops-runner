@@ -33,8 +33,7 @@ TimeoutStartSec=600
 TimeoutStopSec=600
 StandardOutput=null
 StandardError=null
-ExecReload=/bin/kill -USR1 $MAINPID
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
