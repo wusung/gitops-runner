@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-VAR=$1
-APP_NAME=${VAR:=gitlab-deploy}
+VAR1=$1
+VAR2=$2
+APP_NAME=${VAR1:=gitlab-deploy}
+PORT=${VAR2:=3030}
 WORK_DIR=/opt/${APP_NAME}
 SYSTEMD_SERVICE="/etc/systemd/system/${APP_NAME}.service"
 
@@ -26,7 +28,7 @@ Type=idle
 User=root
 Group=root
 WorkingDirectory=${WORK_DIR}
-ExecStart=/usr/bin/env node ${WORK_DIR}/server.js
+ExecStart=/usr/bin/env node ${WORK_DIR}/server.js -p ${PORT} -w ~/.${APP_NAME} -a /opt/${APP_NAME}
 TimeoutStartSec=600
 TimeoutStopSec=600
 StandardOutput=null
@@ -38,4 +40,4 @@ EOF
     echo "${SYSTEMD_SERVICE} created."
 fi
 
-service ${APP_NAME} enable
+systemctl enable ${APP_NAME}
