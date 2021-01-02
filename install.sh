@@ -10,9 +10,14 @@ case $i in
     APP_NAME="${i#*=}"
     shift # past argument=value
     ;;
+    -r=*|--root=*)
+    APP_ROOT="${i#*=}"
+    shift # past argument=value
+    ;;
 esac
 done
 
+APP_ROOT=${APP_ROOT:=/var/lib/www}
 APP_NAME=${APP_NAME:=gitlab-deploy}
 PORT=${PORT:=3030}
 WORK_DIR=/opt/${APP_NAME}
@@ -40,7 +45,7 @@ Type=simple
 User=root
 Group=root
 WorkingDirectory=${WORK_DIR}
-ExecStart=/usr/bin/env node ${WORK_DIR}/server.js -p ${PORT} -w /opt/.${APP_NAME} -a /opt/${APP_NAME}
+ExecStart=/usr/bin/env node ${WORK_DIR}/server.js -p ${PORT} -w /opt/.${APP_NAME} -a ${APP_ROOT}
 TimeoutStartSec=600
 TimeoutStopSec=600
 StandardOutput=null
