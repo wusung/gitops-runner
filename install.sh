@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-
-WORK_DIR=/opt/gitlab-deploy
-SYSTEMD_SERVICE="/etc/systemd/system/gitlab-deploy.service"
+VAR=$1
+APP_NAME=${VAR:=gitlab-deploy}
+WORK_DIR=/opt/${APP_NAME}
+SYSTEMD_SERVICE="/etc/systemd/system/${APP_NAME}.service"
 
 if [ -d ${WORK_DIR} ]; then
     echo "${WORK_DIR} is existed. stop install."
@@ -37,4 +38,4 @@ EOF
     echo "${SYSTEMD_SERVICE} created."
 fi
 
-service gitlab-deploy enable
+service ${APP_NAME} enable
