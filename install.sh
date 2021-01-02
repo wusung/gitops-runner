@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
-VAR1=$1
-VAR2=$2
-APP_NAME=${VAR1:=gitlab-deploy}
-PORT=${VAR2:=3030}
+for i in "$@"
+do
+case $i in
+    -p=*|--port=*)
+    PORT="${i#*=}"
+    shift
+    ;;
+    -p=*|--app=*)
+    APP_NAME="${i#*=}"
+    shift # past argument=value
+    ;;
+esac
+done
+
+APP_NAME=${APP_NAME:=gitlab-deploy}
+PORT=${PORT:=3030}
 WORK_DIR=/opt/${APP_NAME}
 SYSTEMD_SERVICE="/etc/systemd/system/${APP_NAME}.service"
 

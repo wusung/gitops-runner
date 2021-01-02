@@ -3,7 +3,7 @@
 ## How to install
 
 ```
-curl https://raw.githubusercontent.com/wusung/gitlab-deploy/master/install.sh | bash -s igcash-app-deploy 3030
+curl https://raw.githubusercontent.com/wusung/gitlab-deploy/master/install.sh | bash -s --app=igcash-deploy --port=3030
 ```
 
 ## Check the service with systemd
