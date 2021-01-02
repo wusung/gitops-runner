@@ -36,3 +36,5 @@ WantedBy=multi-user.target
 EOF
     echo "${SYSTEMD_SERVICE} created."
 fi
+
+service gitlab-deploy enable
