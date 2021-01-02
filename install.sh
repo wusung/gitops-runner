@@ -37,7 +37,7 @@ popd >/dev/null
 if [ ! -f ${SYSTEMD_SERVICE} ]; then
     cat >${SYSTEMD_SERVICE} <<EOF
 [Unit]
-Description=Gitlab deploy service
+Description=Deploy service (${APP_NAME})
 After=network.target
 
 [Service]

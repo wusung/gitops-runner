@@ -29,7 +29,7 @@ program.parse(process.argv);
 
 const APP_NAME = program.appName || 'deploy-service';
 const KEY_PATH = resolveHome(`/var/lib/${APP_NAME}/${APP_NAME}.key`);
-const WORKING_PATH = resolveHome(program.workingPath || '~/.gitlab-deploy');
+const WORKING_PATH = resolveHome(program.workingPath || '~/.deploy-service');
 const APP_PATH = resolveHome(program.appPath || '/var/lib/www');
 
 function getEncrypedKey() {
