@@ -24,7 +24,7 @@ Description=Gitlab deploy service
 After=network.target
 
 [Service]
-Type=idle
+Type=simple
 User=root
 Group=root
 WorkingDirectory=${WORK_DIR}
@@ -33,6 +33,8 @@ TimeoutStartSec=600
 TimeoutStopSec=600
 StandardOutput=null
 StandardError=null
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
