@@ -23,10 +23,12 @@ program
   .version('1.0.0')
   .option('-p, --port <port>', 'listening port')
   .option('-w, --working-path <path>', 'the working path')
-  .option('-a, --app-path <path>', 'the application path');
+  .option('-a, --app-path <path>', 'the application path')
+  .option('-n, --name <name>', 'the application name');
 program.parse(process.argv);
 
-const KEY_PATH = resolveHome('/var/lib/gitlab-deploy/gitlab-deploy.key');
+const APP_NAME = `${program.name} || 'deploy-service' `;
+const KEY_PATH = resolveHome(`/var/lib/${APP_NAME}/${APP_NAME}.key`);
 const WORKING_PATH = resolveHome(program.workingPath || '~/.gitlab-deploy');
 const APP_PATH = resolveHome(program.appPath || '/var/lib/www');
 
