@@ -6,7 +6,7 @@ case $i in
     PORT="${i#*=}"
     shift
     ;;
-    -p=*|--app=*)
+    -a=*|--app=*)
     APP_NAME="${i#*=}"
     shift # past argument=value
     ;;
