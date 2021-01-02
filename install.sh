@@ -48,8 +48,8 @@ WorkingDirectory=${WORK_DIR}
 ExecStart=/usr/bin/env node ${WORK_DIR}/server.js -p ${PORT} -w /opt/.${APP_NAME} -a ${APP_ROOT}
 TimeoutStartSec=600
 TimeoutStopSec=600
-StandardOutput=null
-StandardError=null
+StandardOutput=syslog
+StandardError=syslog
 Restart=always
 
 [Install]
@@ -59,3 +59,4 @@ EOF
 fi
 
 systemctl enable ${APP_NAME}
+systemctl start ${APP_NAME}
