@@ -1,4 +1,6 @@
 const fs = require('fs');
+const zlib = require('zlib');
+const tar = require('tar');
 const path = require('path');
 const crypto = require('crypto');
 const { v4: uuid } = require('uuid');
@@ -47,4 +49,15 @@ exports.createKey = (keyPath) => {
 
 exports.createHash = (str) => {
   return crypto.createHash('sha256').update(str).digest('base64');
+}
+
+exports.decompress = (input, output) => {
+  exports.ensurePath(path.resolve(output));
+  fs.createReadStream(path.resolve(input))
+  .on('error', console.log)
+  .pipe(zlib.Unzip())
+  .pipe(tar.x({
+    C: path.resolve(output),
+    strip: 2
+  }))
 }

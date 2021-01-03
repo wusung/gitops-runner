@@ -2,7 +2,6 @@ const { Command } = require('commander');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
-const decompress = require('decompress');
 const { pipeline } = require('stream');
 const {
   formatDate,
@@ -10,6 +9,7 @@ const {
   resolveHome,
   createKey,
   createHash,
+  decompress,
 } = require('./utils');
 
 const pump = util.promisify(pipeline);
@@ -55,7 +55,7 @@ fastify.post('/deploy', async (req, reply) => {
 
   const deployPath = path.join(WORKING_PATH, `${appName}_${formatDate(new Date())}`);
   if (data.filename.endsWith('.gz'))
-    await decompress(target, deployPath, { strip: 1 });
+    await decompress(target, deployPath);
   else {
     fs.copyFileSync(target, deployPath);
   }
