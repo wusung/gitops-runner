@@ -73,12 +73,13 @@ fastify.post('/deploy', async (req, reply) => {
     const serviceName = `${wwwPath}/systemd/service-name`;
     if (fs.existsSync(serviceName)) {
       let name = new String(fs.readFileSync(serviceName)).trimEnd();
-      if (fs.existsSync('/usr/sbin/service'))
+      if (fs.existsSync('/usr/sbin/service')) {
         await execSync(`service ${name} restart`);
-      else
+        console.log(`service ${name} restart`);
+      } else
         console.log(`The system does not support 'service ${name} restart'`);
     }
-  }, 500);
+  }, 3000);
 
   reply.send({
     name: data.filename,
