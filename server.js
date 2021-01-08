@@ -11,9 +11,12 @@ const {
   createHash,
   decompress,
 } = require('./utils');
+const exec = require('child_process').exec;
+const execSync = util.promisify(exec);
 
 const pump = util.promisify(pipeline);
 const bearerAuthPlugin = require('fastify-bearer-auth');
+const { setTimeout } = require('timers');
 const fastify = require('fastify')({
   logger: false,
 });
@@ -65,6 +68,18 @@ fastify.post('/deploy', async (req, reply) => {
   console.log(`${wwwPath} deployed.`);
   if (fs.existsSync(wwwPath)) fs.unlinkSync(wwwPath);
   fs.symlinkSync(deployPath, wwwPath);
+
+  setTimeout(async () => {
+    const serviceName = `${wwwPath}/systemd/service_name`;
+    if (fs.existsSync(serviceName)) {
+      let name = new String(fs.readFileSync(serviceName)).trimEnd();
+      if (fs.existsSync('/usr/sbin/service'))
+        await execSync(`service ${name} restart`);
+      else
+        console.log(`The system does not support 'service ${name} restart'`);
+    }
+  }, 500);
+
   reply.send({
     name: data.filename,
     deploy: deployPath,

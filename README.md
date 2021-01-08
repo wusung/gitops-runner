@@ -1,20 +1,20 @@
-# Gitlab deploy
+# deploy service
 
 ## How to install
 
 ```
-curl https://raw.githubusercontent.com/wusung/gitlab-deploy/master/install.sh | bash -s -- -r=/var/lib/www -a=gitlab-deploy -p=3030
+curl https://raw.githubusercontent.com/wusung/gitlab-deploy/master/install.sh | bash -s -- -r=/var/lib/www -a=deploy-service -p=3030
 ```
 
 ## Check the service with systemd
 
 ```shell
-service gitlab-deploy status
+service deploy-service status
 ```
 
 ## How to uninstall
 
 
-rm /etc/systemd/system/igcash-deploy.service
-rm -rf /var/lib/gitlab-deploy
-rm -rf /opt/igcash-deploy
+rm /etc/systemd/system/deploy-service.service
+rm -rf /var/lib/deploy-service
+rm -rf /opt/deploy-service
