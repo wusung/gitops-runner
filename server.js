@@ -70,7 +70,7 @@ fastify.post('/deploy', async (req, reply) => {
   fs.symlinkSync(deployPath, wwwPath);
 
   setTimeout(async () => {
-    const serviceName = `${wwwPath}/systemd/service_name`;
+    const serviceName = `${wwwPath}/systemd/service-name`;
     if (fs.existsSync(serviceName)) {
       let name = new String(fs.readFileSync(serviceName)).trimEnd();
       if (fs.existsSync('/usr/sbin/service'))
