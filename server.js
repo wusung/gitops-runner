@@ -76,10 +76,11 @@ fastify.post('/deploy', async (req, reply) => {
       if (fs.existsSync('/usr/sbin/service')) {
         await execSync(`service ${name} restart`);
         console.log(`service ${name} restart`);
-      } else
+      } else {
         console.log(`The system does not support 'service ${name} restart'`);
+      }
     }
-  }, 3000);
+  }, 5000);
 
   reply.send({
     name: data.filename,
