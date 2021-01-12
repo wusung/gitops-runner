@@ -13,6 +13,8 @@ const {
 } = require('./utils');
 const exec = require('child_process').exec;
 const execSync = util.promisify(exec);
+const shellExec = require('shell-exec');
+const shellExecSync = util.promisify(shellExec);
 
 const pump = util.promisify(pipeline);
 const bearerAuthPlugin = require('fastify-bearer-auth');
@@ -74,7 +76,7 @@ fastify.post('/deploy', async (req, reply) => {
     if (fs.existsSync(serviceName)) {
       let name = new String(fs.readFileSync(serviceName)).trimEnd();
       if (fs.existsSync('/usr/sbin/service')) {
-        await execSync(`service ${name} restart`);
+	await shellExecSync(`service ${name} restart`);
         console.log(`service ${name} restart`);
       } else {
         console.log(`The system does not support 'service ${name} restart'`);
