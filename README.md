@@ -14,7 +14,8 @@ service deploy-service status
 
 ## How to uninstall
 
-
+```shell
 rm /etc/systemd/system/deploy-service.service
 rm -rf /var/lib/deploy-service
 rm -rf /opt/deploy-service
+```
