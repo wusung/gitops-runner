@@ -50,6 +50,7 @@ fastify.register(require('fastify-multipart'));
 
 fastify.get('/start', async (req, reply) => {
   (async() => {
+    console.log('ls -l')
     try {
     } catch (e) {
       console.log('start')
