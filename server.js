@@ -50,16 +50,9 @@ fastify.register(require('fastify-multipart'));
 
 fastify.get('/start', async (req, reply) => {
   (async() => {
-    console.log('start')
     try {
-      console.log(await shellExecSync(`ls -l`))
-      console.log(await shellExecSync(`cd ${APP_PATH} && /usr/bin/git reset --hard HEAD`))
-      await shellExecSync(`cd ${APP_PATH} && /usr/bin/git pull origin feature/202201 --rebase`)
-      await shellExecSync(`cd ${APP_PATH} && ../dev.sh`)
-      await shellExecSync(`cd ${APP_PATH} && mvn clean package && docker build . -t student/app:latest`)
-      await shellExecSync(`cd ${APP_PATH} && docker-compose stop`)
-      await shellExecSync(`cd ${APP_PATH} && docker-compose rm -f`)
-      await shellExecSync(`cd ${APP_PATH} && docker-compose up -d`)
+      console.log('start')
+      await shellExecSync(`${APP_PATH}/run.sh`)
       console.log('end')      
     } catch (e) {
       console.log(e)
