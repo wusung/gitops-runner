@@ -50,15 +50,18 @@ fastify.register(require('fastify-multipart'));
 
 fastify.get('/start', async (req, reply) => {
   (async() => {
-    console.log('start')
-    console.log(await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git reset --hard HEAD`))
-    await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git pull origin feature/202201 --rebase`)
-    await shellExecSync(`cd ${WORKING_PATH} && ../dev.sh`)
-    await shellExecSync(`cd ${WORKING_PATH} && mvn clean package && docker build . -t student/app:latest`)
-    await shellExecSync(`cd ${WORKING_PATH} && docker-compose stop`)
-    await shellExecSync(`cd ${WORKING_PATH} && docker-compose rm -f`)
-    await shellExecSync(`cd ${WORKING_PATH} && docker-compose up -d`)
-    console.log('start')
+    try {
+    } catch (e) {
+      console.log('start')
+      console.log(await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git reset --hard HEAD`))
+      await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git pull origin feature/202201 --rebase`)
+      await shellExecSync(`cd ${WORKING_PATH} && ../dev.sh`)
+      await shellExecSync(`cd ${WORKING_PATH} && mvn clean package && docker build . -t student/app:latest`)
+      await shellExecSync(`cd ${WORKING_PATH} && docker-compose stop`)
+      await shellExecSync(`cd ${WORKING_PATH} && docker-compose rm -f`)
+      await shellExecSync(`cd ${WORKING_PATH} && docker-compose up -d`)
+      console.log('end')      
+    }
   })()
   reply.send({
     status: 'ok'
@@ -66,8 +69,8 @@ fastify.get('/start', async (req, reply) => {
 })
 
 fastify.post('/deploy', async (req, reply) => {
-  ensurePath(WORKING_PATH);
-  ensurePath(APP_PATH);
+  ensurePath(WORKING_PATH)
+  ensurePath(APP_PATH)
 
   const options = { limits: { fileSize: 200 * 1000 * 1000 } };
   const data = await req.file(options);
