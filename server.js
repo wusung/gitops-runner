@@ -50,10 +50,10 @@ fastify.register(require('fastify-multipart'));
 
 fastify.get('/start', async (req, reply) => {
   (async() => {
-    console.log('ls -l')
+    console.log('start')
     try {
     } catch (e) {
-      console.log('start')
+      console.log(await shellExecSync(`ls -l`))
       console.log(await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git reset --hard HEAD`))
       await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git pull origin feature/202201 --rebase`)
       await shellExecSync(`cd ${WORKING_PATH} && ../dev.sh`)
