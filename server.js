@@ -54,13 +54,13 @@ fastify.get('/start', async (req, reply) => {
     try {
     } catch (e) {
       console.log(await shellExecSync(`ls -l`))
-      console.log(await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git reset --hard HEAD`))
-      await shellExecSync(`cd ${WORKING_PATH} && /usr/bin/git pull origin feature/202201 --rebase`)
-      await shellExecSync(`cd ${WORKING_PATH} && ../dev.sh`)
-      await shellExecSync(`cd ${WORKING_PATH} && mvn clean package && docker build . -t student/app:latest`)
-      await shellExecSync(`cd ${WORKING_PATH} && docker-compose stop`)
-      await shellExecSync(`cd ${WORKING_PATH} && docker-compose rm -f`)
-      await shellExecSync(`cd ${WORKING_PATH} && docker-compose up -d`)
+      console.log(await shellExecSync(`cd ${APP_PATH} && /usr/bin/git reset --hard HEAD`))
+      await shellExecSync(`cd ${APP_PATH} && /usr/bin/git pull origin feature/202201 --rebase`)
+      await shellExecSync(`cd ${APP_PATH} && ../dev.sh`)
+      await shellExecSync(`cd ${APP_PATH} && mvn clean package && docker build . -t student/app:latest`)
+      await shellExecSync(`cd ${APP_PATH} && docker-compose stop`)
+      await shellExecSync(`cd ${APP_PATH} && docker-compose rm -f`)
+      await shellExecSync(`cd ${APP_PATH} && docker-compose up -d`)
       console.log('end')      
     }
   })()
