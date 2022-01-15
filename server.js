@@ -49,15 +49,18 @@ fastify.register(bearerAuthPlugin, {
 fastify.register(require('fastify-multipart'));
 
 fastify.get('/start', async (req, reply) => {
-  (async() => {
-    try {
-      console.log('start')
-      await shellExecSync(`${APP_PATH}/run.sh`)
-      console.log('end')      
-    } catch (e) {
-      console.log(e)
+  exec(`${APP_PATH}/run.sh`, (err, stdout, stderr) => {
+    if (err) {
+      // node couldn't execute the command
+      console.log(`stdout: ${err}`)
+      return;
     }
-  })()
+
+    // the *entire* stdout and stderr (buffered)
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+  })
+  
   reply.send({
     status: 'ok'
   })
