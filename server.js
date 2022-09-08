@@ -14,7 +14,6 @@ const {
 const exec = require('child_process').exec;
 const execSync = util.promisify(exec);
 const shellExec = require('shell-exec');
-const shellExecSync = util.promisify(shellExec);
 
 const pump = util.promisify(pipeline);
 const bearerAuthPlugin = require('fastify-bearer-auth');
@@ -74,12 +73,15 @@ fastify.post('/deploy', async (req, reply) => {
   const data = await req.file(options);
   const target = path.join(WORKING_PATH, `${data.filename}`);
   await pump(data.file, fs.createWriteStream(target));
-  const appName = `${path.basename(path.basename(data.filename, '.gz'), '.tar')}`;
+  let appName = `${path.basename(path.basename(data.filename, '.gz'), '.tar')}`;
+  appName = `${path.basename(appName, '.zip')}`;
 
   const deployPath = path.join(WORKING_PATH, `${appName}_${formatDate(new Date())}`);
   if (data.filename.endsWith('.gz'))
     await decompress(target, deployPath);
-  else {
+  else if (data.filename.endsWith('.zip')) {
+    await execSync(`unzip ${target} -d ${deployPath}`);
+  } else {
     fs.copyFileSync(target, deployPath);
   }
   console.log(`${deployPath} uploaded.`);
@@ -94,7 +96,7 @@ fastify.post('/deploy', async (req, reply) => {
     if (fs.existsSync(serviceName)) {
       let name = new String(fs.readFileSync(serviceName)).trimEnd();
       if (fs.existsSync('/usr/sbin/service')) {
-        await shellExecSync(`service ${name} restart`);
+        shellExec(`service ${name} restart`);
         console.log(`service ${name} restart`);
       } else {
         console.log(`The system does not support 'service ${name} restart'`);
@@ -111,7 +113,7 @@ fastify.post('/deploy', async (req, reply) => {
 });
 
 // Run the server!
-fastify.listen(program.port || 3000, (err, address) => {
+fastify.listen({ port: program.port || 3000, host: '0.0.0.0' }, (err, address) => {
   if (err) throw err;
   console.log(`Server listening on ${address}`);
 });
