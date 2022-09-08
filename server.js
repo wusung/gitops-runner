@@ -25,6 +25,7 @@ const fastify = require('fastify')({
 const program = new Command();
 program
   .version('1.0.0')
+  .option('-i, --with-app-name', 'append with app-name')
   .option('-p, --port <port>', 'listening port')
   .option('-w, --working-path <path>', 'the working path')
   .option('-a, --app-path <path>', 'the application path')
@@ -67,7 +68,9 @@ fastify.get('/start', async (req, reply) => {
 
 fastify.post('/deploy', async (req, reply) => {
   ensurePath(WORKING_PATH)
-  ensurePath(APP_PATH)
+  if (program.withAppName) {
+    ensurePath(APP_PATH)
+  }
 
   const options = { limits: { fileSize: 200 * 1000 * 1000 } };
   const data = await req.file(options);
@@ -86,10 +89,15 @@ fastify.post('/deploy', async (req, reply) => {
   }
   console.log(`${deployPath} uploaded.`);
 
-  const wwwPath = `${APP_PATH}/${appName}`;
-  console.log(`${wwwPath} deployed.`);
+  let wwwPath = `${APP_PATH}`;
+  if (program.withAppName) {
+    wwwPath += `/${appName}`;
+  }
+
+  console.log(`${wwwPath} deploying.`);
   if (fs.existsSync(wwwPath)) fs.unlinkSync(wwwPath);
   fs.symlinkSync(deployPath, wwwPath);
+  console.log(`${wwwPath} deployed.`);
 
   setTimeout(async () => {
     const serviceName = `${wwwPath}/systemd/service-name`;
