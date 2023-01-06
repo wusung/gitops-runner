@@ -1,5 +1,8 @@
 # deploy service
 
+## Purpose
+The project aims to deploy the application of distribution to target server.
+
 ## How to install
 
 ```
