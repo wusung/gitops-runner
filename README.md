@@ -1,7 +1,7 @@
 # deploy service
 
 ## Purpose
-The project aims to deploy the application of distribution to target server.
+The project aims to deploy the application of distribution to target server behind the firewall.
 
 ## How to install
 
