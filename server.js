@@ -25,7 +25,7 @@ const fastify = require('fastify')({
 const program = new Command();
 program
   .version('1.0.0')
-  .option('-i, --with-app-name', 'append with app-name')
+  .option('-i, --with-app-name', 'append with app-name', true)
   .option('-p, --port <port>', 'listening port')
   .option('-w, --working-path <path>', 'the working path')
   .option('-a, --app-path <path>', 'the application path')
