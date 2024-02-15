@@ -1,4 +1,4 @@
-# Deploy Runner
+# GitOps Runner
 
 ## Purpose
 The project aims to deploy the application of distribution to target server behind the firewall.
@@ -6,19 +6,19 @@ The project aims to deploy the application of distribution to target server behi
 ## How to install
 
 ```
-curl https://raw.githubusercontent.com/wusung/deploy-runner/master/install.sh | bash -s -- -r=/var/www -a=deploy-runner -p=3030
+curl https://raw.githubusercontent.com/wusung/gitops-runner/master/install.sh | bash -s -- -r=/var/www -a=gitops-runner -p=3030
 ```
 
 ## Check the service with systemd
 
 ```shell
-service deploy-runner status
+service gitops-runner status
 ```
 
 ## How to uninstall
 
 ```shell
-rm /etc/systemd/system/deploy-runner.service
-rm -rf /var/lib/deploy-runner
-rm -rf /opt/deploy-runner
+rm /etc/systemd/system/gitops-runner.service
+rm -rf /var/lib/gitops-runner
+rm -rf /opt/gitops-runner
 ```
