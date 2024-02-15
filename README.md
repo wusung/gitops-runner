@@ -1,4 +1,4 @@
-# deploy service
+# Deploy Runner
 
 ## Purpose
 The project aims to deploy the application of distribution to target server behind the firewall.
@@ -6,19 +6,19 @@ The project aims to deploy the application of distribution to target server behi
 ## How to install
 
 ```
-curl https://raw.githubusercontent.com/wusung/gitlab-deploy/master/install.sh | bash -s -- -r=/var/www -a=deploy-service -p=3030
+curl https://raw.githubusercontent.com/wusung/deploy-runner/master/install.sh | bash -s -- -r=/var/www -a=deploy-runner -p=3030
 ```
 
 ## Check the service with systemd
 
 ```shell
-service deploy-service status
+service deploy-runner status
 ```
 
 ## How to uninstall
 
 ```shell
-rm /etc/systemd/system/deploy-service.service
-rm -rf /var/lib/deploy-service
-rm -rf /opt/deploy-service
+rm /etc/systemd/system/deploy-runner.service
+rm -rf /var/lib/deploy-runner
+rm -rf /opt/deploy-runner
 ```
