@@ -83,7 +83,7 @@ fastify.post('/deploy', async (req, reply) => {
   if (data.filename.endsWith('.gz'))
     await decompress(target, deployPath);
   else if (data.filename.endsWith('.zip')) {
-    await execSync(`unzip ${target} -d ${deployPath}`);
+    await execSync(`unzip ${target} -d ${deployPath} > /dev/null`);
   } else {
     fs.copyFileSync(target, deployPath);
   }
